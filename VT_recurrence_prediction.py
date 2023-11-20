@@ -4,6 +4,8 @@
 # Machine Learning Based Prediction of 1-year Arrhythmia Re-currence after Ventricular Tachycardia Ablation in Patients with Structural Heart Disease
 # Ferenc Komlósi M.D.1†, Patrik Tóth M.D. 1†, Gyula Bohus1, Péter Vámosi M.D. 1, Márton Tokodi M.D, Ph.D. 1,2 Nándor Szegedi M.D. 1, Ph.D., Zoltán Salló M.D. 1, Katalin Piros M.D. 1, Péter Perge M.D. Ph.D. 1, István Osztheimer M.D. Ph.D. 1, Pál Ábrahám M.D. Ph.D. 1, Gábor Széplaki M.D. 3, Ph.D., Béla Merkely M.D. 1, Ph.D., D.Sc., László Gellér M.D. , Ph.D., D.Sc. 1 ‡, Klaudia Vivien Nagy M.D., Ph.D. 1‡*
 
+#for more information look for the publication
+
 
 
 '''Copyright <2023> <Gyula Bohus>
@@ -462,6 +464,45 @@ model_search_df = find_best_with_bayes(
     y_ser, 
     1  # number_of_parallel_jobs
     ) 
+
+
+
+
+# I-VT reproduction
+
+def reccurrence_after_ablation_IVT(age, 
+            lvef, # EF
+            device, # device , ICD or CRT device
+            clinical_vt_inducible, 
+            clinical_vt_ceased, 
+            non_clinical_vt_inducible, 
+            non_clinical_vt_ceased, 
+            all_vt_not_inducible_postabl, 
+            
+            reabl
+            ): # copy of IVT based on their website figure
+    if lvef >= 30:
+        if device < 1:
+            return 130 / 580, 2
+        else:
+            if (clinical_vt_inducible == 1) and (clinical_vt_ceased == 0):
+                # print('Clinical VT did not cease!!!')
+                return 6 / 14, 3
+            else:
+                return 11 / 147, 1
+    else:
+        if (all_vt_not_inducible_postabl==1) or ((non_clinical_vt_inducible==1) and (non_clinical_vt_ceased == 0)):
+            # print('Good inducibility!!!')
+            if age < 65:
+                return 41 / 166, 2
+            else:
+                return 82 / 230, 3
+        else:
+            if reabl:
+                return 30 / 39, 3
+            else:
+                return 16 / 34, 3
+
 
 
 #description of the final model pipeline
